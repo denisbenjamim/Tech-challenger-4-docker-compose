@@ -1,0 +1,66 @@
+version: '3.8'
+
+services:
+##MSPEDIDOS##
+  #BANCO
+  db-produtos:
+    image: postgres:latest
+    container_name: db-produtos
+    volumes:
+      - postgres_data_produtos:/var/lib/postgresql/data
+    # ports: #caso precise acessar o banco externamente
+    #   - "5432:5432"
+    environment:
+      POSTGRES_DB: msprodutos
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: root
+    restart: always
+    networks:
+      - sgpism_network
+    
+  #APLICAÇAO
+  msprodutos:
+    container_name: msprodutos
+    build:
+      context: .
+      dockerfile: produtos.Dockerfile
+    ports:
+      - "8082:8082"
+    environment:
+      SPRING_PROFILES_ACTIVE: dev
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db-produtos/msprodutos
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: root
+    depends_on:
+      - db-produtos
+    restart: always
+    networks:
+      - sgpism_network
+
+  #APLICAÇAO
+  mscargaprodutos:
+    container_name: mscargaprodutos
+    build:
+      context: .
+      dockerfile: carga-produtos.Dockerfile
+    ports:
+      - "8083:8083"
+    environment:
+      SPRING_PROFILES_ACTIVE: dev
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db-produtos/msprodutos
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: root
+    depends_on:
+      - db-produtos
+      - msprodutos
+    restart: always
+    networks:
+      - sgpism_network
+
+##CONFIG NETWORKS
+networks:
+  sgpism_network:
+    driver: bridge
+
+volumes:
+  postgres_data_produtos:

@@ -1,0 +1,44 @@
+version: '3.8'
+
+services:
+#BANCO
+  db-logistica:
+    image: postgres:latest
+    container_name: db-logistica
+    volumes:
+      - postgres_data_logistica:/var/lib/postgresql/data
+    # ports: #caso precise acessar o banco externamente
+    #   - "5432:5432"
+    environment:
+      POSTGRES_DB: fiap_logistica_entrega
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: root
+    restart: always
+    networks:
+      - sgpism_network
+
+#APLICACAO      
+  mslogistica:
+    container_name: mslogistica
+    build:
+      context: .
+    ports:
+      - "8085:8085"
+    environment:
+      SPRING_PROFILES_ACTIVE: dev
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db-logistica/fiap_logistica_entrega
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: root
+    depends_on:
+      - db-logistica
+    restart: always
+    networks:
+      - sgpism_network      
+
+##CONFIG NETWORKS
+networks:
+  sgpism_network:
+    driver: bridge
+
+volumes:
+  postgres_data_logistica:

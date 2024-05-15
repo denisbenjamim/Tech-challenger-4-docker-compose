@@ -1,0 +1,12 @@
+version: '3.8'
+include:
+  - mscliente/docker-compose.yaml
+  - msproduto/docker-compose.yaml
+  - mspedido/docker-compose.yaml
+  - mslogistica/docker-compose.yaml
+
+##CONFIG NETWORKS
+networks:
+  sgpism_network:
+    driver: bridge
+
