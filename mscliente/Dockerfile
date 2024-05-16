@@ -1,6 +1,5 @@
 FROM alpine/git AS GIT
-# RUN git clone https://github.com/Nicole-Bidigaray/mscliente.git /app
-RUN git clone https://denisbenjamim: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@github.com/denisbenjamim/mscliente.git /app
+RUN git  clone --depth=1 https://github.com/Nicole-Bidigaray/mscliente.git /app
 WORKDIR /app
 
 FROM maven:3.8.4 AS builder

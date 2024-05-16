@@ -1,5 +1,5 @@
 FROM alpine/git AS GIT
-RUN git clone https://github.com/westrindade/mspedido.git /app
+RUN git clone --depth=1 https://github.com/westrindade/mspedido.git /app
 WORKDIR /app
 
 FROM maven:3.8.4 AS builder
