@@ -1,9 +1,27 @@
-version: '3.8'
 include:
   - mscliente/docker-compose.yaml
   - msproduto/docker-compose.yaml
   - mspedido/docker-compose.yaml
   - mslogistica/docker-compose.yaml
+
+services:
+  gateway:
+    container_name: gateway
+    build:
+      context: .
+      dockerfile: gateway/Dockerfile
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_PROFILES_ACTIVE: dev    
+    depends_on:
+      - mscliente
+      - mscargaprodutos
+      - mslogistica
+      - mspedidos
+    restart: always
+    networks:
+      - sgpism_network
 
 ##CONFIG NETWORKS
 networks:
